@@ -5,31 +5,33 @@ services:
   - docker
 
 before_install:
-  - docker build -t rallycoding/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t abc/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true rallycoding/react-test npm test
+  - docker run -e CI=true abc/react-test npm test
 
 after_success:
-  - docker build -t rallycoding/multi-client ./client
-  - docker build -t rallycoding/multi-nginx ./nginx
-  - docker build -t rallycoding/multi-server ./server
-  - docker build -t rallycoding/multi-worker ./worker
+  - docker build -t abc/multi-client ./client
+  - docker build -t abc/multi-nginx ./nginx
+  - docker build -t abc/multi-server ./server
+  - docker build -t abc/multi-worker ./worker
+
   # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
   # Take those images and push them to docker hub
-  - docker push rallycoding/multi-client
-  - docker push rallycoding/multi-nginx
-  - docker push rallycoding/multi-server
-  - docker push rallycoding/multi-worker
+  - docker push abc/multi-client
+  - docker push abc/multi-nginx
+  - docker push abc/multi-server
+  - docker push abc/multi-worker
 
 deploy:
   provider: elasticbeanstalk
-  region: 'us-east-1'
-  app: 'multi-docker'
-  env: 'MultiDocker-env'
-  bucket_name: 'elasticbeanstalk-us-east-1-923445559289'
-  bucket_path: 'docker-multi'
+  region: "us-west-1"
+  app: "multi-docker"
+  env: "MultiDocker-env"
+  bucket_name: ""
+  bucket_path: "docker-multi"
   on:
     branch: main
   access_key_id: $AWS_ACCESS_KEY
